@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curso · Eixo Produtividade — Prêmio CNJ de Qualidade (Justiça Eleitoral)</title>
+<style>
+  :root{
+    --azul:#0b3d6b; --azul2:#14467a; --azul-claro:#e8f0f8; --azul-borda:#cfe0ef;
+    --verde:#1c7c54; --verde-claro:#e6f3ec;
+    --ambar:#9a6700; --ambar-claro:#fdf3da; --ambar-borda:#f0dca0;
+    --vermelho:#9a2a2a; --vermelho-claro:#fbeaea;
+    --cinza-texto:#2b3640; --cinza-suave:#5a6b7a; --cinza-linha:#e2e8ee;
+    --bg:#f4f7fa; --branco:#ffffff;
+    --sombra:0 1px 3px rgba(16,40,64,.08), 0 1px 2px rgba(16,40,64,.06);
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--cinza-texto);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.65; font-size:16px;
+  }
+  a{color:var(--azul2);}
+  /* Layout */
+  .app{display:flex; min-height:100vh;}
+  .sidebar{
+    width:300px; background:var(--azul); color:#dce8f3; flex-shrink:0;
+    position:sticky; top:0; height:100vh; overflow-y:auto; padding:0;
+  }
+  .sb-brand{padding:22px 22px 16px; border-bottom:1px solid rgba(255,255,255,.12);}
+  .sb-brand .selo{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:#8fb4d6; font-weight:600;}
+  .sb-brand h1{font-size:17px; margin:6px 0 2px; color:#fff; line-height:1.3;}
+  .sb-brand .sub{font-size:12.5px; color:#9fc0dd;}
+  .sb-prog{padding:14px 22px; border-bottom:1px solid rgba(255,255,255,.12); font-size:12px; color:#9fc0dd;}
+  .sb-prog .bar{height:7px; background:rgba(255,255,255,.16); border-radius:20px; margin-top:7px; overflow:hidden;}
+  .sb-prog .bar i{display:block; height:100%; width:0; background:#4da3e0; transition:width .35s ease;}
+  nav.modlist{padding:10px 0 30px;}
+  nav.modlist button{
+    display:flex; gap:10px; align-items:flex-start; width:100%; text-align:left;
+    background:none; border:0; color:#cfe0ef; padding:11px 22px; cursor:pointer;
+    font-size:13.5px; font-family:inherit; line-height:1.35; border-left:3px solid transparent;
+  }
+  nav.modlist button:hover{background:rgba(255,255,255,.07); color:#fff;}
+  nav.modlist button.ativo{background:rgba(77,163,224,.16); color:#fff; border-left-color:#4da3e0; font-weight:600;}
+  nav.modlist button .n{font-size:11px; color:#8fb4d6; min-width:20px; padding-top:1px;}
+  nav.modlist button.ativo .n{color:#9fd0f5;}
+  nav.modlist .grupo{font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:#6f96bb; padding:16px 22px 5px; font-weight:700;}
+
+  /* Conteúdo */
+  .main{flex:1; min-width:0;}
+  .topbar{display:none;}
+  .wrap{max-width:860px; margin:0 auto; padding:46px 40px 90px;}
+  section.modulo{display:none; animation:fade .35s ease;}
+  section.modulo.ativo{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  .kicker{font-size:12.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--azul2); font-weight:700;}
+  h2.tit{font-size:27px; line-height:1.2; margin:6px 0 4px; color:var(--azul);}
+  .lead{font-size:17.5px; color:var(--cinza-suave); margin:0 0 26px;}
+  h3{font-size:20px; color:var(--azul); margin:34px 0 10px;}
+  h4{font-size:16.5px; color:var(--azul2); margin:22px 0 6px;}
+  p{margin:0 0 14px;}
+  ul,ol{margin:0 0 16px; padding-left:22px;}
+  li{margin:6px 0;}
+  strong{color:var(--cinza-texto);}
+
+  .card{background:var(--branco); border:1px solid var(--cinza-linha); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--sombra); margin:18px 0;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
+
+  .pill{display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:30px; margin:2px 4px 2px 0;}
+  .pill.je{background:var(--verde-claro); color:var(--verde); border:1px solid #bfe0cd;}
+  .pill.nao{background:var(--vermelho-claro); color:var(--vermelho); border:1px solid #eccaca;}
+  .pill.pts{background:var(--azul-claro); color:var(--azul2); border:1px solid var(--azul-borda);}
+
+  .callout{border-left:4px solid var(--azul2); background:var(--azul-claro); border-radius:0 8px 8px 0; padding:14px 18px; margin:18px 0;}
+  .callout.verde{border-left-color:var(--verde); background:var(--verde-claro);}
+  .callout.ambar{border-left-color:var(--ambar); background:var(--ambar-claro);}
+  .callout.vermelho{border-left-color:var(--vermelho); background:var(--vermelho-claro);}
+  .callout h4{margin:0 0 4px; color:inherit;}
+  .callout p:last-child{margin:0;}
+
+  .formula{background:#0e2a44; color:#eaf2fa; border-radius:8px; padding:16px 18px; font-size:15px; margin:14px 0; line-height:1.5;}
+  .formula .frac{color:#9fd0f5; font-weight:600;}
+  .formula small{color:#9fc0dd; display:block; margin-top:8px; font-size:12.5px;}
+
+  /* Passo a passo pedagógico */
+  .passo{background:#f0f6fc; border:1px solid var(--azul-borda); border-radius:12px; padding:18px 20px 8px; margin:20px 0;}
+  .passo .cab{font-weight:700; color:var(--azul); margin-bottom:12px; font-size:16px; display:flex; align-items:center; gap:8px;}
+  .passo ol{counter-reset:p; list-style:none; padding:0; margin:0;}
+  .passo ol li{position:relative; padding:11px 0 11px 46px; border-bottom:1px dashed var(--azul-borda); margin:0;}
+  .passo ol li:last-child{border-bottom:0;}
+  .passo ol li::before{counter-increment:p; content:counter(p); position:absolute; left:0; top:10px; width:30px; height:30px; background:var(--azul); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700;}
+  .passo ol li strong.rot{color:var(--azul2); display:block; margin-bottom:2px;}
+  .passo .conta{background:#fff; border:1px solid var(--azul-borda); border-radius:8px; padding:9px 12px; margin:7px 0 2px; font-size:14.5px;}
+  .passo .conta b{color:var(--verde);}
+
+  /* Analogia do dia a dia */
+  .analogia{background:#fff7ec; border:1px dashed var(--ambar-borda); border-radius:12px; padding:14px 18px; margin:16px 0; font-size:15px;}
+  .analogia .et{font-weight:700; color:var(--ambar); display:block; margin-bottom:2px;}
+  .analogia p:last-child{margin:0;}
+
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14.5px; background:var(--branco); border-radius:8px; overflow:hidden; box-shadow:var(--sombra);}
+  th,td{padding:10px 13px; text-align:left; border-bottom:1px solid var(--cinza-linha);}
+  th{background:var(--azul); color:#fff; font-weight:600; font-size:13.5px;}
+  tr:last-child td{border-bottom:0;}
+  td.dest{font-weight:700; color:var(--verde);}
+  tbody tr:hover{background:#f7fafd;}
+
+  details.exemplo{border:1px solid var(--azul-borda); border-radius:8px; margin:16px 0; background:#fbfdff; overflow:hidden;}
+  details.exemplo summary{cursor:pointer; padding:13px 18px; font-weight:600; color:var(--azul2); background:var(--azul-claro); list-style:none; display:flex; justify-content:space-between; align-items:center;}
+  details.exemplo summary::-webkit-details-marker{display:none;}
+  details.exemplo summary::after{content:"＋"; font-size:18px; color:var(--azul2);}
+  details.exemplo[open] summary::after{content:"－";}
+  details.exemplo .corpo{padding:16px 18px;}
+  details.exemplo .corpo p:last-child{margin:0;}
+
+  .nav-rod{display:flex; justify-content:space-between; gap:12px; margin-top:44px; padding-top:22px; border-top:1px solid var(--cinza-linha);}
+  .nav-rod button{font-family:inherit; font-size:14px; font-weight:600; padding:11px 18px; border-radius:8px; border:1px solid var(--azul-borda); background:var(--branco); color:var(--azul2); cursor:pointer;}
+  .nav-rod button:hover:not(:disabled){background:var(--azul-claro);}
+  .nav-rod button.prim{background:var(--azul); color:#fff; border-color:var(--azul);}
+  .nav-rod button.prim:hover{background:var(--azul2);}
+  .nav-rod button:disabled{opacity:.4; cursor:default;}
+
+  /* Quiz */
+  .quiz-q{background:var(--branco); border:1px solid var(--cinza-linha); border-radius:var(--radius); padding:20px 22px; margin:16px 0; box-shadow:var(--sombra);}
+  .quiz-q .pergunta{font-weight:600; margin-bottom:12px;}
+  .quiz-q label{display:block; padding:10px 14px; border:1px solid var(--cinza-linha); border-radius:8px; margin:7px 0; cursor:pointer; font-size:14.5px; transition:.15s;}
+  .quiz-q label:hover{border-color:var(--azul2); background:#f7fafd;}
+  .quiz-q input{margin-right:9px;}
+  .quiz-q label.certo{background:var(--verde-claro); border-color:#9cd1b3;}
+  .quiz-q label.errado{background:var(--vermelho-claro); border-color:#e2b2b2;}
+  .quiz-fb{margin-top:10px; font-size:14px; padding:10px 14px; border-radius:8px; display:none;}
+  .quiz-fb.ok{display:block; background:var(--verde-claro); color:var(--verde);}
+  .quiz-fb.no{display:block; background:var(--vermelho-claro); color:var(--vermelho);}
+  .quiz-acoes{display:flex; gap:12px; align-items:center; margin-top:18px; flex-wrap:wrap;}
+  .quiz-acoes button{font-family:inherit; font-size:14px; font-weight:600; padding:11px 20px; border-radius:8px; border:0; background:var(--azul); color:#fff; cursor:pointer;}
+  .quiz-acoes button.sec{background:var(--branco); color:var(--azul2); border:1px solid var(--azul-borda);}
+  .placar{font-weight:700; font-size:16px; color:var(--azul);}
+
+  .ref{font-size:13.5px; color:var(--cinza-suave);}
+  .ref li{margin:8px 0;}
+  .tag-fonte{font-size:12.5px; color:var(--cinza-suave); font-style:italic; margin-top:6px;}
+
+  .hambtn{position:fixed; top:14px; left:14px; z-index:40; background:var(--azul); color:#fff; border:0; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; display:none; box-shadow:var(--sombra);}
+
+  @media(max-width:880px){
+    .sidebar{position:fixed; left:0; top:0; z-index:35; transform:translateX(-100%); transition:transform .3s; box-shadow:4px 0 18px rgba(0,0,0,.2);}
+    .sidebar.aberta{transform:none;}
+    .hambtn{display:block;}
+    .wrap{padding:70px 22px 80px;}
+    .backdrop{position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:34; display:none;}
+    .backdrop.on{display:block;}
+  }
+  @media print{
+    .sidebar,.hambtn,.nav-rod,.quiz-acoes{display:none!important;}
+    section.modulo{display:block!important;}
+    .wrap{max-width:100%; padding:0;}
+    .card,table,.quiz-q{box-shadow:none;}
+  }
+</style>
+</head>
+<body>
+<button class="hambtn" id="hamb" aria-label="Abrir menu">☰</button>
+<div class="backdrop" id="backdrop"></div>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="selo">TRE-GO · Capacitação interna</div>
+      <h1>Eixo Produtividade</h1>
+      <div class="sub">Prêmio CNJ de Qualidade · Justiça Eleitoral</div>
+    </div>
+    <div class="sb-prog">
+      Progresso do curso <span id="progtxt">0%</span>
+      <div class="bar"><i id="progbar"></i></div>
+    </div>
+    <nav class="modlist" id="modlist"></nav>
+  </aside>
+
+  <main class="main">
+    <div class="wrap">
+
+      <!-- ===================== MÓDULO 0 ===================== -->
+      <section class="modulo ativo" data-titulo="Apresentação" data-grupo="Início">
+        <div class="kicker">Bem-vindo(a)</div>
+        <h2 class="tit">Entendendo o eixo Produtividade</h2>
+        <p class="lead">Um curso prático para que toda a equipe do TRE-GO compreenda, de forma clara, os indicadores que medem nossa atividade jurisdicional no Prêmio CNJ de Qualidade.</p>
+
+        <div class="card">
+          <p style="margin:0;"><strong>Para quem é este curso:</strong> servidoras e servidores da Justiça Eleitoral de Goiás que querem entender — em nível intermediário — o que são e como funcionam os indicadores do eixo Produtividade, sem precisar ser especialista em estatística.</p>
+        </div>
+
+        <h3>O que você vai aprender</h3>
+        <ul>
+          <li>O que é o Prêmio CNJ de Qualidade, seus objetivos e como ele é estruturado.</li>
+          <li>A diferença entre os quatro eixos — e por que o <strong>Produtividade</strong> é o eixo da atividade-fim jurisdicional.</li>
+          <li>Os conceitos-base: indicador, meta, numerador/denominador, “pendente líquido”, casos novos, baixados, acervo.</li>
+          <li>Cada um dos <strong>cinco indicadores que pontuam para a Justiça Eleitoral</strong>, com fórmula, parâmetros e exemplos.</li>
+          <li>Quais indicadores do eixo <em>não</em> contam para os TREs — e por quê.</li>
+        </ul>
+
+        <div class="callout ambar">
+          <h4>Base normativa</h4>
+          <p>Todo o conteúdo segue a <strong>Portaria Presidência CNJ nº 471, de 18 de dezembro de 2025</strong>, que institui o Regulamento do Prêmio CNJ de Qualidade para 2026 e 2027 (Anexo II — eixo Produtividade). Os parâmetros de 2026 já estão definidos; os de 2027 serão publicados até 30/8/2026, mantendo, sempre que possível, as mesmas faixas de pontuação.</p>
+        </div>
+
+        <p class="tag-fonte">Dica: use o menu à esquerda para navegar, ou os botões “Anterior / Próximo” ao fim de cada módulo. A barra de progresso registra os módulos visitados.</p>
+
+        <div class="nav-rod"><span></span><button class="prim" data-ir="next">Começar →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 1 ===================== -->
+      <section class="modulo" data-titulo="O Prêmio CNJ de Qualidade" data-grupo="Fundamentos">
+        <div class="kicker">Módulo 1 · Contexto</div>
+        <h2 class="tit">O Prêmio CNJ de Qualidade</h2>
+        <p class="lead">Antes dos indicadores, é preciso entender o instrumento que os organiza.</p>
+
+        <p>O <strong>Prêmio CNJ de Qualidade</strong> é uma premiação anual do Conselho Nacional de Justiça que reconhece os tribunais brasileiros pela qualidade da gestão administrativa e judiciária, pela produção de dados estatísticos confiáveis e pela transparência. Ele funciona como um grande “raio-x” padronizado: o CNJ define critérios, os tribunais comprovam o cumprimento e recebem pontuação.</p>
+
+        <h3>Os cinco objetivos (Art. 2º)</h3>
+        <ul>
+          <li>Estimular e reconhecer o desenvolvimento de mecanismos de governança e gestão;</li>
+          <li>Contribuir para o aprimoramento da prestação jurisdicional;</li>
+          <li>Promover a transparência e a melhoria na prestação de informações;</li>
+          <li>Incentivar o aperfeiçoamento do Sistema de Estatísticas do Poder Judiciário e dos serviços de TI;</li>
+          <li>Fomentar subsídios para o planejamento estratégico e a formulação das metas nacionais.</li>
+        </ul>
+
+        <h3>As três faixas de premiação (Art. 3º)</h3>
+        <div class="grid2">
+          <div class="card" style="border-top:3px solid #6fa8dc;"><strong>💎 Diamante</strong><br><span class="ref">O nível mais alto de reconhecimento.</span></div>
+          <div class="card" style="border-top:3px solid #c9a227;"><strong>🥇 Ouro</strong><br><span class="ref">Nível intermediário.</span></div>
+        </div>
+        <div class="card" style="border-top:3px solid #9aa7b1; max-width:calc(50% - 8px);"><strong>🥈 Prata</strong><br><span class="ref">Nível de entrada da premiação.</span></div>
+        <p>A faixa alcançada depende da pontuação total somada nos eixos, considerando o porte e o segmento de Justiça (a Justiça Eleitoral é avaliada com parâmetros próprios).</p>
+
+        <div class="callout vermelho">
+          <h4>Atenção: penalizações (Art. 13)</h4>
+          <p>O tribunal pode <strong>perder até 50 pontos</strong> por inconsistências nos sistemas ou falhas de lançamento no DataJud, e <strong>até 20 pontos</strong> por cada requisição do CNJ não atendida. Pode ainda ser <strong>excluído</strong> da premiação se retiver a distribuição de processos para inflar pontuação. Dado confiável é pré-requisito — não detalhe.</p>
+        </div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Próximo →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 2 ===================== -->
+      <section class="modulo" data-titulo="Os quatro eixos" data-grupo="Fundamentos">
+        <div class="kicker">Módulo 2 · Estrutura</div>
+        <h2 class="tit">Os quatro eixos temáticos</h2>
+        <p class="lead">A avaliação é segmentada em quatro eixos (Art. 8º), cada um detalhado em um Anexo da Portaria.</p>
+
+        <table>
+          <thead><tr><th>Eixo</th><th>O que avalia</th><th>Anexo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>I · Governança</strong></td><td>Controle, planejamento e implementação de políticas judiciárias.</td><td>Anexo I</td></tr>
+            <tr><td><strong>II · Produtividade</strong></td><td>Metas nacionais, celeridade, redução de acervo e conciliação.</td><td>Anexo II</td></tr>
+            <tr><td><strong>III · Transparência</strong></td><td>Atendimento ao cidadão e disponibilização de informações públicas.</td><td>Anexo III</td></tr>
+            <tr><td><strong>IV · Dados e Tecnologia</strong></td><td>Gestão da informação e soluções tecnológicas (DataJud, sistemas).</td><td>Anexo IV</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <h4>“Eixo jurisdicional” existe?</h4>
+          <p>Não com esse nome. O regulamento não tem um “eixo jurisdicional”. O eixo que trata diretamente da <strong>atividade-fim — a prestação jurisdicional</strong> — é o <strong>Produtividade</strong>: é ele que mede se julgamos no prazo, se reduzimos o acervo e se cumprimos as metas. É o foco deste curso.</p>
+        </div>
+
+        <h3>Por que o Produtividade é o “coração” da atividade jurisdicional</h3>
+        <p>Enquanto Governança olha para políticas e estrutura, e Dados e Tecnologia olha para sistemas, o eixo Produtividade responde à pergunta mais direta do jurisdicionado: <em>“o tribunal está entregando decisões, com qualidade e no tempo certo?”</em>. Ele traduz em números a celeridade, a vazão e o enfrentamento do estoque de processos.</p>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Próximo →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 3 ===================== -->
+      <section class="modulo" data-titulo="Conceitos essenciais" data-grupo="Fundamentos">
+        <div class="kicker">Módulo 3 · Alfabetização em indicadores</div>
+        <h2 class="tit">Conceitos essenciais</h2>
+        <p class="lead">Cinco ideias simples que destravam a leitura de qualquer indicador do eixo. Não é preciso saber estatística — vamos do zero.</p>
+
+        <div class="analogia">
+          <span class="et">Comece por aqui 🌡️</span>
+          <p>Pense num <strong>termômetro</strong>. Ele não cura ninguém — apenas mostra um número (a temperatura) que ajuda a decidir o que fazer. Um <strong>indicador</strong> é o termômetro do tribunal: um número que mostra como anda o trabalho. Os indicadores do Prêmio são vários termômetros, cada um medindo uma coisa (rapidez, estoque, vazão). Aprender o eixo é aprender a <em>ler</em> esses termômetros.</p>
+        </div>
+
+        <h4>1. Indicador, meta e resultado</h4>
+        <p>Um <strong>indicador</strong> é uma medida (um número) que retrata uma realidade — por exemplo, o tempo médio de tramitação. Uma <strong>meta</strong> é o valor que se quer atingir nesse indicador (o “alvo”). O <strong>resultado</strong> é o que de fato foi alcançado. No Prêmio, a pontuação nasce de uma comparação simples: <em>o resultado caiu em qual faixa?</em> Cada faixa vale um tanto de pontos.</p>
+
+        <h4>2. Numerador e denominador (a fração sem susto)</h4>
+        <p>Quase todo indicador é uma <strong>fração</strong> — uma divisão. O número de baixo, o <strong>denominador</strong>, é o “total” que estamos olhando. O número de cima, o <strong>numerador</strong>, é a parte desse total que interessa. Dividir um pelo outro e multiplicar por 100 dá uma <strong>porcentagem</strong>.</p>
+        <div class="analogia">
+          <span class="et">Analogia da pizza 🍕</span>
+          <p>Uma pizza tem 8 fatias (o <strong>total</strong> = denominador). Você comeu 2 (a <strong>parte</strong> = numerador). Quanto da pizza você comeu? 2 ÷ 8 = 0,25 = <strong>25%</strong>. Indicador é exatamente isso: “de tudo isso, quanto é aquilo?”.</p>
+        </div>
+        <div class="formula">Índice (%) = <span class="frac">(numerador ÷ denominador)</span> × 100<small>Ex.: de 200 processos sentenciados (total), 40 foram por acordo → 40 ÷ 200 = 20% de conciliação.</small></div>
+
+        <h4>3. Pendente líquido — o conceito mais importante do eixo</h4>
+        <p>Guarde bem este: vários indicadores usam o <strong>“pendente líquido”</strong>. São os processos em estoque <strong>tirando</strong> aqueles que estão <strong>suspensos, sobrestados ou em arquivo provisório</strong> — ou seja, processos que estão parados por uma razão jurídica, e não por falta de trabalho do tribunal. Também se descontam os <em>períodos</em> em que o processo ficou parado por esses motivos.</p>
+        <div class="analogia">
+          <span class="et">Analogia do estoque 📦</span>
+          <p>Imagine o estoque de uma loja. Tem 100 caixas, mas 10 estão <strong>lacradas por ordem judicial</strong> — ninguém pode mexer nelas. Se alguém perguntar “quantas caixas você consegue vender?”, a resposta honesta é <strong>90</strong>, não 100. O “pendente líquido” é esse estoque <em>de verdade movimentável</em>: 90, e não 100. O Prêmio mede o tribunal pelas 90 que ele pode mexer — é mais justo.</p>
+        </div>
+        <div class="callout verde"><p style="margin:0;"><strong>Por que isso importa:</strong> medir só o que o tribunal pode efetivamente movimentar evita “punir” o tribunal por processos travados por lei. Sempre que ouvir “líquido”, pense: <em>“o estoque, menos o que está legalmente parado”</em>.</p></div>
+
+        <h4>4. Casos novos, baixados e acervo</h4>
+        <ul>
+          <li><strong>Casos novos:</strong> processos que entraram no período.</li>
+          <li><strong>Baixados:</strong> processos que saíram (julgados e finalizados, remetidos a outra instância, etc.).</li>
+          <li><strong>Acervo (estoque):</strong> o que permanece pendente ao fim do período.</li>
+        </ul>
+
+        <h4>5. Fonte e período de referência</h4>
+        <p>A fonte oficial é o <strong>DataJud</strong> (Base Nacional de Dados do Poder Judiciário), consolidado nos painéis do <strong>Justiça em Números</strong>. Cada indicador tem um <strong>período de referência</strong> e um prazo de envio dos dados. Se o dado não chega no prazo e parametrizado corretamente, ele simplesmente não conta.</p>
+
+        <div class="callout ambar"><p style="margin:0;">🧭 <strong>Guarde esta ideia:</strong> no Prêmio, “produzir” não basta — é preciso <strong>registrar corretamente no sistema</strong>. Boa parte da pontuação depende da qualidade do cadastro no DataJud.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Ver os indicadores →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 4 ===================== -->
+      <section class="modulo" data-titulo="Visão geral do eixo" data-grupo="Eixo Produtividade">
+        <div class="kicker">Módulo 4 · Mapa do eixo</div>
+        <h2 class="tit">O eixo Produtividade em uma página</h2>
+        <p class="lead">O Art. 10 lista 15 requisitos. Mas nem todos se aplicam à Justiça Eleitoral — e isso é ótimo: o foco do TRE fica em cinco.</p>
+
+        <p>O eixo Produtividade “engloba aspectos da gestão judiciária relacionados ao cumprimento das metas nacionais, à celeridade processual, à redução de acervo e ao incentivo à conciliação” (Art. 10). Cada requisito vale uma quantidade de pontos e tem parâmetros próprios por segmento de Justiça.</p>
+
+        <h3>O que pontua — e o que não pontua — para a Justiça Eleitoral</h3>
+        <table>
+          <thead><tr><th>Requisito (Art. 10)</th><th>Tema</th><th>Justiça Eleitoral?</th></tr></thead>
+          <tbody>
+            <tr><td>I</td><td>IPC-Jus</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td><strong>II</strong></td><td>Tempo médio dos pendentes líquidos</td><td><span class="pill je">Sim · 70 pts</span></td></tr>
+            <tr><td>III</td><td>Índices de conciliação</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td><strong>IV</strong></td><td>Metas Nacionais</td><td><span class="pill je">Sim · 60 pts</span></td></tr>
+            <tr><td><strong>V</strong></td><td>Reduzir processos antigos</td><td><span class="pill je">Sim · 70 pts</span></td></tr>
+            <tr><td>VI</td><td>Celeridade — violência doméstica / feminicídio</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td>VII</td><td>Celeridade / conciliação — saúde</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td>VIII</td><td>Celeridade — direito assistencial</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td><strong>IX (a)</strong></td><td>Celeridade — ações penais</td><td><span class="pill je">Sim · 20 pts</span></td></tr>
+            <tr><td>X</td><td>Julgamento de IRDR / IAC</td><td><span class="pill nao">Não</span></td></tr>
+            <tr><td><strong>XI</strong></td><td>Índice de Atendimento à Demanda (IAD)</td><td><span class="pill je">Sim · 50 pts</span></td></tr>
+            <tr><td>XII–XV</td><td>Ambiental, Pena Justa, socioeducativo, atos infracionais</td><td><span class="pill nao">Não</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout verde">
+          <h4>Os 5 indicadores do TRE — até ~270 pontos no eixo</h4>
+          <p>Tempo médio dos pendentes líquidos (70) · Metas Nacionais (60) · Redução de processos antigos (70) · Celeridade nas ações penais eleitorais (20) · IAD (50). São esses que veremos um a um a seguir.</p>
+        </div>
+        <p class="tag-fonte">A aplicabilidade de cada requisito por segmento consta na coluna “Tribunais” do Anexo II da Portaria 471/2025.</p>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Indicador 1 →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 5 — Art.10,II ===================== -->
+      <section class="modulo" data-titulo="1. Tempo médio (pendentes líquidos)" data-grupo="Indicadores que pontuam">
+        <div class="kicker">Indicador 1 · Art. 10, II</div>
+        <h2 class="tit">Tempo médio dos pendentes líquidos</h2>
+        <p class="lead">Mede quão rápido, em média, os processos em estoque estão tramitando. <span class="pill pts">Até 70 pontos</span></p>
+
+        <h4>O que é</h4>
+        <p>É o número médio de dias que os processos <strong>pendentes líquidos</strong> de conhecimento já estão em tramitação, em todos os graus de jurisdição. Quanto menor o tempo, melhor — significa que o acervo é “jovem” e está girando.</p>
+
+        <div class="formula">Tempo médio = média de dias de tramitação dos processos pendentes líquidos<small>Considera processos de natureza “Conhecimento”, excluídos os períodos de suspensão, sobrestamento e arquivo provisório. Situação processual em 31/7/2026.</small></div>
+
+        <h4>Parâmetros e pontuação — Justiça Eleitoral</h4>
+        <table>
+          <thead><tr><th>Tempo médio dos pendentes líquidos</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Até 150 dias</td><td class="dest">70</td></tr>
+            <tr><td>De 151 a 200 dias</td><td>50</td></tr>
+            <tr><td>De 201 a 300 dias</td><td>25</td></tr>
+            <tr><td>Acima de 300 dias</td><td>0</td></tr>
+          </tbody>
+        </table>
+        <p class="tag-fonte">Cada segmento tem faixas próprias. Ex.: na Justiça do Trabalho o teto para 70 pts é 180 dias; na Estadual/Federal, 500 dias. A Eleitoral tem a faixa mais exigente (150 dias).</p>
+
+        <div class="passo">
+          <div class="cab">🔍 Como a conta funciona, passo a passo</div>
+          <ol>
+            <li><strong class="rot">A pergunta que ele responde</strong> “Na média, há quantos dias os processos que estão na nossa mão estão esperando?”</li>
+            <li><strong class="rot">O que você precisa contar</strong> Liste cada processo de conhecimento que está pendente líquido (lembre: estoque menos os parados por lei). Para cada um, veja há quantos dias ele tramita.</li>
+            <li><strong class="rot">Onde achar o número</strong> No painel “Tempo médio dos processos pendentes líquidos” do Justiça em Números, que puxa do DataJud. Você não calcula na mão no dia a dia — mas precisa entender como sai.</li>
+            <li><strong class="rot">A conta, devagar</strong> Some os dias de todos os processos e divida pela quantidade de processos. É uma média simples.
+              <div class="conta">3 processos: 100, 140 e 180 dias → 100+140+180 = 420 → 420 ÷ 3 = <b>140 dias</b></div>
+            </li>
+            <li><strong class="rot">Como vira pontos</strong> Pegue o resultado e veja em qual faixa da tabela ele cai. 140 dias está em “até 150” → <b>70 pontos</b>.</li>
+            <li><strong class="rot">Na prática, o que melhora isso</strong> Julgar primeiro os processos mais antigos. Eles são os que mais “puxam a média para cima”.</li>
+          </ol>
+        </div>
+
+        <details class="exemplo"><summary>Exemplo prático</summary><div class="corpo">
+          <p>Suponha que, em 31/7/2026, uma zona eleitoral tenha 4 processos de conhecimento pendentes líquidos com os seguintes tempos de tramitação: 80, 120, 160 e 200 dias.</p>
+          <p>Tempo médio = (80 + 120 + 160 + 200) ÷ 4 = <strong>140 dias</strong>. Resultado abaixo de 150 → <strong>70 pontos</strong>. Se um único processo antigo de 600 dias entrasse na conta, a média saltaria para 232 dias e a pontuação cairia para 25. Por isso, atacar os processos mais antigos puxa este indicador para cima.</p>
+        </div></details>
+
+        <div class="callout verde"><p style="margin:0;">✅ <strong>Alavanca de gestão:</strong> priorizar a baixa dos processos mais antigos reduz a média e, de quebra, ajuda no Indicador 3 (processos antigos). Um esforço, dois indicadores.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Indicador 2 →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 6 — Art.10,IV ===================== -->
+      <section class="modulo" data-titulo="2. Metas Nacionais" data-grupo="Indicadores que pontuam">
+        <div class="kicker">Indicador 2 · Art. 10, IV</div>
+        <h2 class="tit">Metas Nacionais</h2>
+        <p class="lead">O cumprimento das Metas Nacionais do Judiciário, fixadas a cada Encontro Nacional. <span class="pill pts">Até 60 pontos (TREs)</span></p>
+
+        <h4>Como pontua</h4>
+        <p>A pontuação depende do <strong>índice de cumprimento</strong> de cada meta. Atingir 100% ou mais de uma meta rende pontos; o total é limitado ao teto do segmento — <strong>60 pontos para os Tribunais Regionais Eleitorais</strong> (o TSE não pontua aqui).</p>
+        <table>
+          <thead><tr><th>Meta cumprida (≥ 100%)</th><th>Pontos por meta</th></tr></thead>
+          <tbody>
+            <tr><td>Meta 1, Meta 2 e Meta 3</td><td class="dest">20</td></tr>
+            <tr><td>Meta 4 a Meta 10</td><td>10</td></tr>
+          </tbody>
+        </table>
+        <p class="tag-fonte">Base: cumprimento das Metas Nacionais de 2025. Quando há mais de um período/percentual por grau, usa-se ponderação pelo valor da meta e pelo volume de processos.</p>
+
+        <div class="passo">
+          <div class="cab">🔍 Como a conta funciona, passo a passo</div>
+          <ol>
+            <li><strong class="rot">A pergunta que ele responde</strong> “Cumprimos as metas que todo o Judiciário combinou para o ano?”</li>
+            <li><strong class="rot">O que você precisa contar</strong> Para cada meta: o quanto o tribunal entregou dividido pelo quanto a meta pedia. Isso dá o <strong>% de cumprimento</strong> da meta.</li>
+            <li><strong class="rot">Onde achar o número</strong> No Painel de Metas do CNJ, que mostra o cumprimento de cada meta, atualizado com os dados do DataJud.</li>
+            <li><strong class="rot">A conta, devagar</strong> Suponha que a Meta 1 pedia julgar 1.000 processos e o tribunal julgou 1.050.
+              <div class="conta">1.050 ÷ 1.000 = 1,05 = <b>105%</b> → passou de 100% → meta cumprida ✓</div>
+            </li>
+            <li><strong class="rot">Como vira pontos</strong> Cada meta cumprida (≥ 100%) rende pontos: Meta 1, 2 e 3 valem 20 cada; Meta 4 a 10 valem 10 cada. Soma-se tudo até o teto de <b>60 pontos</b> para o TRE.</li>
+            <li><strong class="rot">Na prática, o que melhora isso</strong> Olhar o painel o ano inteiro, não só no fim. Atenção: 99% conta como <strong>zero</strong> ponto naquela meta — falta de 1% custa caro.</li>
+          </ol>
+        </div>
+
+        <h4>As principais metas aplicáveis à Justiça Eleitoral (2025)</h4>
+        <div class="card">
+          <p style="margin:0 0 8px;"><strong>Meta 1 — Produtividade.</strong> Julgar mais processos de conhecimento do que os distribuídos no período (20/12/2024 a 19/12/2025), excluídos suspensos e sobrestados. É a meta que garante que o tribunal não deixe o estoque crescer.</p>
+        </div>
+        <div class="card">
+          <p style="margin:0 0 8px;"><strong>Meta 2 — Enfrentamento do acervo antigo.</strong> Identificar e julgar os processos de conhecimento mais antigos (pendentes há seis anos ou mais, na Justiça Eleitoral). Combate a prescrição e a litigiosidade crônica.</p>
+        </div>
+        <div class="card">
+          <p style="margin:0;"><strong>Meta 4 — Combate à corrupção e ilícitos eleitorais.</strong> Priorizar o julgamento das ações de improbidade, crimes contra a Administração Pública e, no caso da Justiça Eleitoral, dos <strong>ilícitos eleitorais</strong>.</p>
+        </div>
+
+        <details class="exemplo"><summary>Exemplo prático</summary><div class="corpo">
+          <p>Imagine um TRE que, em 2025, cumpriu a Meta 1 (105%), a Meta 2 (100%) e a Meta 4 (110%). Pontuação: Meta 1 = 20, Meta 2 = 20, Meta 4 = 10 → <strong>50 pontos</strong>. Faltariam 10 pontos para o teto de 60, que poderiam vir de outra meta aplicável cumprida. Note que ficar em 99% em uma meta significa <strong>zero</strong> ponto naquela meta — o cumprimento precisa alcançar 100%.</p>
+        </div></details>
+
+        <div class="callout ambar"><p style="margin:0;">⚠️ <strong>Tudo ou (quase) nada:</strong> o ponto só é creditado com cumprimento ≥ 100%. Acompanhar o painel de metas ao longo do ano — e não só no fim — é o que evita parar a 1 ou 2 pontos percentuais do prêmio.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Indicador 3 →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 7 — Art.10,V ===================== -->
+      <section class="modulo" data-titulo="3. Redução de processos antigos" data-grupo="Indicadores que pontuam">
+        <div class="kicker">Indicador 3 · Art. 10, V</div>
+        <h2 class="tit">Redução de processos antigos</h2>
+        <p class="lead">Mede o peso dos processos mais antigos dentro do estoque atual. <span class="pill pts">Até 70 pontos</span></p>
+
+        <h4>O que é</h4>
+        <p>Verifica qual <strong>percentual</strong> do acervo pendente líquido ainda é composto por processos <strong>antigos</strong> — aqui definidos como os ajuizados <strong>até o ano de 2023</strong> e que nunca receberam julgamento. Quanto menor esse percentual, melhor: indica que o tribunal está “limpando” o estoque velho.</p>
+
+        <div class="formula">% de antigos = <span class="frac">processos ajuizados até 2023 e nunca julgados ÷ total de pendentes líquidos não julgados</span> × 100<small>Pendentes líquidos em 31/7/2026, natureza “Conhecimento”, contabilizado o tempo desde o ajuizamento.</small></div>
+
+        <h4>Parâmetros e pontuação — Justiça Eleitoral</h4>
+        <table>
+          <thead><tr><th>Processos antigos representam…</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Até 1,50% dos pendentes líquidos</td><td class="dest">70</td></tr>
+            <tr><td>De 1,51% a 2,50%</td><td>35</td></tr>
+            <tr><td>Acima de 2,50%</td><td>0</td></tr>
+          </tbody>
+        </table>
+        <p class="tag-fonte">A Justiça Eleitoral e a Justiça Militar Estadual compartilham essa faixa (até 1,50%). Na Estadual/Federal o teto é 17%, refletindo realidades de acervo distintas.</p>
+
+        <div class="passo">
+          <div class="cab">🔍 Como a conta funciona, passo a passo</div>
+          <ol>
+            <li><strong class="rot">A pergunta que ele responde</strong> “Quanto do nosso estoque de hoje ainda é ‘processo velho’?”</li>
+            <li><strong class="rot">O que você precisa contar</strong> Em cima (numerador): os processos ajuizados <strong>até 2023</strong> que <strong>nunca foram julgados</strong>. Embaixo (denominador): todo o estoque pendente líquido não julgado.</li>
+            <li><strong class="rot">Onde achar o número</strong> No painel de estatísticas do Justiça em Números, com a parametrização do DataJud.</li>
+            <li><strong class="rot">A conta, devagar</strong> Suponha 9.000 processos no estoque, dos quais 100 são antigos (até 2023 e nunca julgados).
+              <div class="conta">100 ÷ 9.000 = 0,0111 = <b>1,11%</b></div>
+            </li>
+            <li><strong class="rot">Como vira pontos</strong> 1,11% é “até 1,50%” → <b>70 pontos</b>. Se os antigos fossem 200 (2,22%), cairia para 35.</li>
+            <li><strong class="rot">Na prática, o que melhora isso</strong> Mutirão de processos antigos. Cada antigo julgado sai do número de cima e derruba o percentual.</li>
+          </ol>
+        </div>
+
+        <details class="exemplo"><summary>Exemplo prático</summary><div class="corpo">
+          <p>Um TRE tem 9.000 processos pendentes líquidos não julgados. Destes, 100 foram ajuizados até 2023 e nunca julgados. Percentual = 100 ÷ 9.000 = <strong>1,11%</strong> → abaixo de 1,50% → <strong>70 pontos</strong>. Se fossem 200 processos antigos (2,22%), a pontuação cairia para 35. Cada processo antigo baixado aproxima o tribunal do teto.</p>
+        </div></details>
+
+        <div class="callout verde"><p style="margin:0;">🔗 <strong>Sinergia:</strong> este indicador conversa diretamente com a Meta 2 (acervo antigo) e com o Indicador 1 (tempo médio). Um mutirão de processos antigos move os três ao mesmo tempo.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Indicador 4 →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 8 — Art.10,IX ===================== -->
+      <section class="modulo" data-titulo="4. Celeridade — ações penais" data-grupo="Indicadores que pontuam">
+        <div class="kicker">Indicador 4 · Art. 10, IX (a)</div>
+        <h2 class="tit">Celeridade nas ações penais eleitorais</h2>
+        <p class="lead">A Justiça Eleitoral também julga crimes eleitorais — e a velocidade dessas ações penais pontua. <span class="pill pts">Até 20 pontos</span></p>
+
+        <h4>O que é</h4>
+        <p>Mede o <strong>tempo médio</strong> dos processos de <strong>ação penal pendentes líquidos</strong>, contado entre o início da ação penal e a data-base de cálculo. Aplica-se à Justiça Eleitoral (item “a” do Art. 10, IX), com faixa própria — a mesma da Justiça Militar Estadual.</p>
+
+        <div class="formula">Tempo médio penal = média de dias entre o início da ação penal e a data-base<small>Processos pendentes líquidos, natureza “Conhecimento”, grau G1, conforme parametrização do DataJud para ações penais.</small></div>
+
+        <h4>Parâmetros e pontuação — Justiça Eleitoral</h4>
+        <table>
+          <thead><tr><th>Tempo médio das ações penais</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Até 500 dias</td><td class="dest">20</td></tr>
+            <tr><td>De 501 a 700 dias</td><td>10</td></tr>
+            <tr><td>Acima de 700 dias</td><td>0</td></tr>
+          </tbody>
+        </table>
+
+        <div class="passo">
+          <div class="cab">🔍 Como a conta funciona, passo a passo</div>
+          <ol>
+            <li><strong class="rot">A pergunta que ele responde</strong> “Os crimes eleitorais estão sendo julgados em tempo razoável?”</li>
+            <li><strong class="rot">O que você precisa contar</strong> Cada ação penal eleitoral que está pendente líquida. Para cada uma, conte os dias desde o início da ação penal até a data-base.</li>
+            <li><strong class="rot">Onde achar o número</strong> No DataJud, com a parametrização de ações penais, no 1º grau (G1).</li>
+            <li><strong class="rot">A conta, devagar</strong> É uma média, igual à do tempo médio.
+              <div class="conta">3 ações penais: 300, 460 e 620 dias → 1.380 ÷ 3 = <b>460 dias</b></div>
+            </li>
+            <li><strong class="rot">Como vira pontos</strong> 460 dias é “até 500” → <b>20 pontos</b>. Acima de 500 e até 700 → 10 pontos.</li>
+            <li><strong class="rot">Na prática, o que melhora isso</strong> Identificar as ações penais paradas há mais tempo e dar prioridade a elas.</li>
+          </ol>
+        </div>
+
+        <details class="exemplo"><summary>Exemplo prático</summary><div class="corpo">
+          <p>Crimes eleitorais (ex.: corrupção eleitoral, “boca de urna”, falsidade) tramitam como ações penais. Se o conjunto de ações penais pendentes de um TRE tem tempo médio de 460 dias, o tribunal soma <strong>20 pontos</strong>. A 520 dias, cairia para 10. Pequeno volume, mas pontos que podem decidir a faixa do prêmio.</p>
+        </div></details>
+
+        <div class="callout"><p style="margin:0;">ℹ️ Há também um item “b” do Art. 10, IX (tribunal do júri) que <strong>não</strong> se aplica à Justiça Eleitoral. Para o TRE, vale apenas o item “a”, das ações penais em geral.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Indicador 5 →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 9 — Art.10,XI ===================== -->
+      <section class="modulo" data-titulo="5. IAD" data-grupo="Indicadores que pontuam">
+        <div class="kicker">Indicador 5 · Art. 10, XI</div>
+        <h2 class="tit">Índice de Atendimento à Demanda (IAD)</h2>
+        <p class="lead">O tribunal está dando vazão a tudo que entra? O IAD responde — e tem regras especiais para a Justiça Eleitoral. <span class="pill pts">Até 50 pontos</span></p>
+
+        <h4>O que é</h4>
+        <p>O <strong>IAD</strong> compara o que <strong>saiu</strong> com o que <strong>entrou</strong> em cada unidade judiciária no período. Um IAD de 100% significa que a unidade baixou exatamente o mesmo que recebeu — não deixou o acervo crescer. Acima de 100%, reduziu estoque.</p>
+
+        <div class="formula">IAD = <span class="frac">(baixados + remetidos a outras unidades) ÷ (casos novos + recebidos de outras unidades)</span> × 100<small>Calculado por unidade judiciária, natureza “Conhecimento” e “Execução” (exceto execuções penais).</small></div>
+        <div class="analogia">
+          <span class="et">Analogia da caixa de e-mail 📥</span>
+          <p>Hoje chegaram 10 e-mails e você respondeu 10 → sua “vazão” foi <strong>100%</strong>: a caixa não cresceu. Se respondeu 11 (um atrasado de ontem), foi <strong>110%</strong>: você até diminuiu a fila. Se respondeu só 8, ficou em <strong>80%</strong> e a caixa aumentou. O IAD mede exatamente isso para cada unidade: ela <em>deu conta de tudo que entrou</em>?</p>
+        </div>
+
+        <h4>Como vira pontuação</h4>
+        <p>Não se mede o IAD do tribunal inteiro, e sim o <strong>percentual de unidades judiciárias</strong> que atingiram um bom IAD. Quanto mais unidades com IAD alto, mais pontos — até 30 pontos no 1º grau e até 20 no 2º grau (total 50).</p>
+        <table>
+          <thead><tr><th>% de unidades com bom IAD (1º grau)</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Acima de 80,00%</td><td class="dest">30</td></tr>
+            <tr><td>65,01% a 80,00%</td><td>25</td></tr>
+            <tr><td>50,01% a 65,00%</td><td>20</td></tr>
+            <tr><td>40,01% a 50,00%</td><td>15</td></tr>
+            <tr><td>30,01% a 40,00%</td><td>10</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout ambar">
+          <h4>Especificidades da Justiça Eleitoral</h4>
+          <p>Por causa do <strong>calendário eleitoral</strong>, o período-base do IAD para a Justiça Eleitoral é <strong>1º/8/2025 a 31/5/2026</strong> (e não 12 meses cheios). Como a <strong>taxa de congestionamento</strong> só pode ser calculada em 12 meses, ela <strong>não se aplica</strong> ao TRE: a pontuação é verificada <strong>unicamente pelo IAD ≥ 100%</strong>. Entram no cálculo unidades como <strong>Zonas Eleitorais (ZE)</strong>, <strong>Turmas Recursais (TR)</strong> e gabinetes de membros da corte eleitoral.</p>
+        </div>
+        <p class="tag-fonte">Nos demais segmentos, é possível pontuar com IAD ≥ 90% desde que a taxa de congestionamento líquida seja inferior a 25% — exceção que, justamente, não vale para a Justiça Eleitoral.</p>
+
+        <div class="passo">
+          <div class="cab">🔍 Como a conta funciona, passo a passo (são duas etapas)</div>
+          <ol>
+            <li><strong class="rot">A pergunta que ele responde</strong> “Cada unidade (cada zona eleitoral, turma, gabinete) deu conta de tudo que entrou nela?”</li>
+            <li><strong class="rot">O que você precisa contar, por unidade</strong> As <strong>saídas</strong> (baixados + remetidos a outras unidades) e as <strong>entradas</strong> (casos novos + recebidos de outras unidades).</li>
+            <li><strong class="rot">Onde achar o número</strong> No DataJud, separado por unidade judiciária — inclui Zonas Eleitorais (ZE), Turmas Recursais (TR) e gabinetes de membros da corte.</li>
+            <li><strong class="rot">A conta, devagar — Etapa 1: o IAD de uma unidade</strong>
+              <div class="conta">Uma zona com 520 saídas e 500 entradas → 520 ÷ 500 = <b>104%</b> (≥ 100% → “deu conta”)</div>
+            </li>
+            <li><strong class="rot">A conta, devagar — Etapa 2: a nota do tribunal</strong> Conte <strong>quantas unidades</strong> ficaram com IAD ≥ 100% e veja que percentual elas representam.
+              <div class="conta">85 zonas com IAD ≥ 100%, de 100 zonas → 85% das unidades → faixa “acima de 80%” → <b>30 pontos</b> (1º grau)</div>
+            </li>
+            <li><strong class="rot">O detalhe eleitoral que muda tudo</strong> Na Justiça Eleitoral vale <strong>só o IAD ≥ 100%</strong> — a “taxa de congestionamento” não entra (o período eleitoral não fecha 12 meses). Na prática: não deixar <em>nenhuma</em> zona “estourar” vale mais do que ter poucas zonas excelentes.</li>
+          </ol>
+        </div>
+
+        <details class="exemplo"><summary>Exemplo prático</summary><div class="corpo">
+          <p>Um TRE tem 100 zonas eleitorais. Se 85 delas fecharam o período com IAD ≥ 100%, isso é 85% das unidades → acima de 80% → <strong>30 pontos</strong> no 1º grau. Some a pontuação do 2º grau (turmas/gabinetes) para chegar ao total do indicador. Mensagem de gestão: distribuir bem o esforço entre as zonas, sem deixar nenhuma “estourar”, vale mais que concentrar tudo em poucas.</p>
+        </div></details>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">E o resto? →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 10 ===================== -->
+      <section class="modulo" data-titulo="O que não pontua (e por quê)" data-grupo="Para fechar">
+        <div class="kicker">Módulo 10 · Tirando dúvidas</div>
+        <h2 class="tit">Indicadores que não pontuam para o TRE</h2>
+        <p class="lead">Entender o que fica de fora evita esforço perdido e perguntas recorrentes.</p>
+
+        <p>Vários requisitos famosos do eixo Produtividade <strong>não se aplicam à Justiça Eleitoral</strong> porque tratam de competências que não são nossas. Saber disso é parte de dominar o tema.</p>
+
+        <h4>IPC-Jus (Art. 10, I) — o mais citado, e que não conta para nós</h4>
+        <p>O <strong>Índice de Produtividade Comparada da Justiça</strong> mede a eficiência relativa de um tribunal comparando o que ele produz (processos baixados) com os recursos que consome (magistrados, servidores, despesa), usando uma técnica de fronteira de eficiência. No Prêmio, ele pontua apenas para Tribunais de Justiça, do Trabalho e Federais — <strong>não para os TREs</strong>. Vale conhecer o conceito, mas ele não entra na conta do TRE-GO.</p>
+
+        <h4>Outros que ficam de fora</h4>
+        <ul>
+          <li><strong>Conciliação (III):</strong> parâmetros definidos para Estadual, Federal e Trabalho.</li>
+          <li><strong>Violência doméstica e feminicídio (VI), saúde (VII), direito assistencial (VIII):</strong> competências da Justiça comum.</li>
+          <li><strong>IRDR/IAC (X):</strong> aplicável a TJ, TRF e TRT.</li>
+          <li><strong>Ambiental (XII), Pena Justa/SEEU (XIII), socioeducativo (XIV), atos infracionais (XV):</strong> matérias penais/de execução e da infância, fora da competência eleitoral.</li>
+        </ul>
+
+        <div class="callout"><p style="margin:0;">🎯 <strong>Resumo:</strong> dos 15 requisitos do eixo, a Justiça Eleitoral joga em <strong>5</strong>. Concentrar energia e comunicação nesses cinco é a estratégia certa.</p></div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Glossário →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 11 ===================== -->
+      <section class="modulo" data-titulo="Glossário" data-grupo="Para fechar">
+        <div class="kicker">Módulo 11 · Consulta rápida</div>
+        <h2 class="tit">Glossário</h2>
+        <p class="lead">Os termos do eixo, em uma frase cada.</p>
+
+        <div class="card"><strong>Pendente líquido</strong> — Processos em estoque, excluídos os suspensos, sobrestados e em arquivo provisório (e os períodos nessas situações).</div>
+        <div class="card"><strong>Casos novos</strong> — Processos que ingressaram no período de referência.</div>
+        <div class="card"><strong>Baixados</strong> — Processos finalizados ou remetidos para outra unidade/instância no período.</div>
+        <div class="card"><strong>Acervo / estoque</strong> — Conjunto de processos pendentes ao fim do período.</div>
+        <div class="card"><strong>DataJud</strong> — Base Nacional de Dados do Poder Judiciário; a fonte oficial dos números (Resolução CNJ nº 331/2020).</div>
+        <div class="card"><strong>Justiça em Números</strong> — Programa e painéis do CNJ que consolidam e publicam as estatísticas a partir do DataJud.</div>
+        <div class="card"><strong>Meta Nacional</strong> — Objetivo de desempenho fixado anualmente no Encontro Nacional do Poder Judiciário.</div>
+        <div class="card"><strong>IPC-Jus</strong> — Índice de Produtividade Comparada da Justiça; eficiência relativa entre produção e recursos (não pontua para TREs).</div>
+        <div class="card"><strong>Taxa de congestionamento (líquida)</strong> — Percentual de casos que permanecem pendentes em relação ao total tramitado no ano, excluídos suspensos/sobrestados/arquivo provisório. Alta = retenção de estoque.</div>
+        <div class="card"><strong>IAD</strong> — Índice de Atendimento à Demanda; relação entre baixados e casos novos. 100% = deu vazão a tudo que entrou.</div>
+        <div class="card"><strong>IRDR / IAC</strong> — Incidente de Resolução de Demandas Repetitivas / Incidente de Assunção de Competência (não pontuam para TREs).</div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Fazer o quiz →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 12 — QUIZ ===================== -->
+      <section class="modulo" data-titulo="Quiz de fixação" data-grupo="Para fechar">
+        <div class="kicker">Módulo 12 · Avaliação</div>
+        <h2 class="tit">Quiz de fixação</h2>
+        <p class="lead">Dez questões para consolidar o aprendizado. Marque uma opção por questão e clique em “Corrigir”.</p>
+
+        <div id="quiz"></div>
+
+        <div class="quiz-acoes">
+          <button id="corrigir">Corrigir respostas</button>
+          <button class="sec" id="refazer">Refazer</button>
+          <span class="placar" id="placar"></span>
+        </div>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" data-ir="next">Encerramento →</button></div>
+      </section>
+
+      <!-- ===================== MÓDULO 13 ===================== -->
+      <section class="modulo" data-titulo="Encerramento e fontes" data-grupo="Para fechar">
+        <div class="kicker">Encerramento</div>
+        <h2 class="tit">Parabéns — você concluiu o curso</h2>
+        <p class="lead">Agora você domina, em nível intermediário, o eixo Produtividade do Prêmio CNJ de Qualidade aplicado à Justiça Eleitoral.</p>
+
+        <div class="callout verde">
+          <h4>Os 5 indicadores do TRE, em uma frase</h4>
+          <p><strong>Tempo médio</strong> (julgar rápido) · <strong>Metas Nacionais</strong> (cumprir as metas do ano) · <strong>Processos antigos</strong> (limpar o acervo velho) · <strong>Ações penais</strong> (celeridade nos crimes eleitorais) · <strong>IAD</strong> (dar vazão a tudo que entra, zona a zona).</p>
+        </div>
+
+        <h3>Próximos passos sugeridos</h3>
+        <ul>
+          <li>Acompanhe os painéis do Justiça em Números com olhar nos 5 indicadores.</li>
+          <li>Garanta a qualidade do cadastro no DataJud — dado errado vira ponto perdido (ou penalização).</li>
+          <li>Priorize processos antigos: é o esforço que move mais indicadores de uma vez.</li>
+        </ul>
+
+        <h3>Fontes oficiais</h3>
+        <ul class="ref">
+          <li>Portaria Presidência CNJ nº 471, de 18/12/2025 — Regulamento do Prêmio CNJ de Qualidade 2026-2027 (Anexo II). Documento na pasta do tribunal.</li>
+          <li>Página oficial do Prêmio CNJ de Qualidade — <span style="word-break:break-all;">cnj.jus.br/pesquisas-judiciarias/premio-cnj-de-qualidade/</span></li>
+          <li>Metas Nacionais 2025 e glossário da Justiça Eleitoral — Portal CNJ, Gestão Estratégica e Planejamento.</li>
+          <li>Indicadores Taxa de Congestionamento e Índice de Atendimento à Demanda — Portal CNJ / Justiça em Números.</li>
+        </ul>
+        <p class="tag-fonte">Material de capacitação interna do TRE-GO. Os parâmetros referem-se à premiação de 2026; os de 2027 serão publicados até 30/8/2026 e devem ser conferidos quando disponíveis.</p>
+
+        <div class="nav-rod"><button data-ir="prev">← Anterior</button><button class="prim" onclick="window.scrollTo({top:0,behavior:'smooth'})">Voltar ao topo ↑</button></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var secoes = Array.prototype.slice.call(document.querySelectorAll('.modulo'));
+  var modlist = document.getElementById('modlist');
+  var visitados = {};
+  var grupoAtual = '';
+
+  // Monta o menu lateral agrupado
+  secoes.forEach(function(sec, i){
+    var g = sec.getAttribute('data-grupo');
+    if(g !== grupoAtual){
+      var gl = document.createElement('div');
+      gl.className = 'grupo'; gl.textContent = g;
+      modlist.appendChild(gl); grupoAtual = g;
+    }
+    var b = document.createElement('button');
+    b.innerHTML = '<span class="n">'+(i)+'</span><span>'+sec.getAttribute('data-titulo')+'</span>';
+    b.addEventListener('click', function(){ irPara(i); fecharMenu(); });
+    modlist.appendChild(b);
+  });
+  var botoesMenu = Array.prototype.slice.call(modlist.querySelectorAll('button'));
+
+  var atual = 0;
+  function irPara(i){
+    if(i<0 || i>=secoes.length) return;
+    secoes[atual].classList.remove('ativo');
+    botoesMenu[atual].classList.remove('ativo');
+    atual = i;
+    secoes[atual].classList.add('ativo');
+    botoesMenu[atual].classList.add('ativo');
+    visitados[i] = true;
+    atualizarProgresso();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  function atualizarProgresso(){
+    var n = Object.keys(visitados).length;
+    var pct = Math.round((n/secoes.length)*100);
+    document.getElementById('progbar').style.width = pct+'%';
+    document.getElementById('progtxt').textContent = pct+'%';
+  }
+  document.querySelector('.wrap').addEventListener('click', function(e){
+    var t = e.target.closest('[data-ir]'); if(!t) return;
+    irPara(t.getAttribute('data-ir')==='next' ? atual+1 : atual-1);
+  });
+
+  // Menu mobile
+  var sb = document.getElementById('sidebar'), bd = document.getElementById('backdrop');
+  function fecharMenu(){ sb.classList.remove('aberta'); bd.classList.remove('on'); }
+  document.getElementById('hamb').addEventListener('click', function(){ sb.classList.toggle('aberta'); bd.classList.toggle('on'); });
+  bd.addEventListener('click', fecharMenu);
+
+  // Inicializa
+  botoesMenu[0].classList.add('ativo'); visitados[0]=true; atualizarProgresso();
+
+  // ---------- QUIZ ----------
+  var perguntas = [
+    {p:'O regulamento do Prêmio CNJ de Qualidade possui um “eixo jurisdicional”?',
+     o:['Sim, é um dos quatro eixos','Não; o eixo da atividade-fim é o Produtividade','Sim, exclusivo da Justiça Eleitoral','Não existe eixo algum'], c:1,
+     fb:'São quatro eixos — Governança, Produtividade, Transparência e Dados e Tecnologia. O da atividade jurisdicional é o Produtividade.'},
+    {p:'O que é um processo “pendente líquido”?',
+     o:['Todo processo em estoque, sem exceção','O estoque, excluídos suspensos, sobrestados e arquivo provisório','Apenas processos já julgados','Processos com custas pagas'], c:1,
+     fb:'Pendente líquido exclui o que está travado por razões jurídicas (suspensão, sobrestamento, arquivo provisório).'},
+    {p:'Na Justiça Eleitoral, o tempo médio dos pendentes líquidos vale 70 pontos quando é de até quantos dias?',
+     o:['Até 500 dias','Até 300 dias','Até 180 dias','Até 150 dias'], c:3,
+     fb:'A faixa máxima para a Justiça Eleitoral é a mais exigente: até 150 dias = 70 pontos.'},
+    {p:'Qual o teto de pontuação das Metas Nacionais para os Tribunais Regionais Eleitorais?',
+     o:['130 pontos','60 pontos','90 pontos','20 pontos'], c:1,
+     fb:'O teto é 60 pontos para os TREs (o TSE não pontua nesse requisito).'},
+    {p:'Uma meta cumprida a 99% rende quantos pontos?',
+     o:['Pontuação proporcional (quase cheia)','Metade dos pontos','Zero — exige cumprimento ≥ 100%','Depende do porte do tribunal'], c:2,
+     fb:'O ponto só é creditado com cumprimento igual ou superior a 100%.'},
+    {p:'No indicador de processos antigos (Justiça Eleitoral), 70 pontos exigem que os antigos sejam até quanto do acervo?',
+     o:['Até 1,50%','Até 17%','Até 10%','Até 5%'], c:0,
+     fb:'Para a Justiça Eleitoral, até 1,50% do pendente líquido = 70 pontos.'},
+    {p:'A celeridade nas ações penais aplica-se à Justiça Eleitoral?',
+     o:['Não, é só da Justiça comum','Sim — crimes eleitorais tramitam como ações penais','Apenas no tribunal do júri','Somente no 2º grau'], c:1,
+     fb:'Sim. O item “a” do Art. 10, IX vale para a JE (até 500 dias = 20 pontos). O item “b” (júri) não se aplica.'},
+    {p:'Como se calcula o IAD de uma unidade judiciária?',
+     o:['Julgados ÷ servidores','(Baixados + remetidos) ÷ (casos novos + recebidos)','Pendentes ÷ casos novos','Sentenças ÷ audiências'], c:1,
+     fb:'IAD = (baixados + remetidos) ÷ (casos novos + recebidos). 100% = deu vazão a tudo que entrou.'},
+    {p:'Por que a taxa de congestionamento não é usada no IAD da Justiça Eleitoral?',
+     o:['Porque a JE não tem acervo','Porque o período-base é menor que 12 meses, por causa das eleições','Porque o CNJ a aboliu','Porque a JE não usa o DataJud'], c:1,
+     fb:'O período-base eleitoral (1º/8/2025 a 31/5/2026) não fecha 12 meses; logo a taxa de congestionamento não se aplica, e vale só o IAD ≥ 100%.'},
+    {p:'Quantos dos 15 requisitos do eixo Produtividade pontuam para a Justiça Eleitoral?',
+     o:['Todos os 15','Dez','Cinco','Apenas um'], c:2,
+     fb:'Cinco: tempo médio, metas nacionais, processos antigos, ações penais e IAD.'}
+  ];
+  var quizDiv = document.getElementById('quiz');
+  function montarQuiz(){
+    quizDiv.innerHTML='';
+    perguntas.forEach(function(q, qi){
+      var d = document.createElement('div'); d.className='quiz-q';
+      var html = '<div class="pergunta">'+(qi+1)+'. '+q.p+'</div>';
+      q.o.forEach(function(op, oi){
+        html += '<label data-q="'+qi+'" data-o="'+oi+'"><input type="radio" name="q'+qi+'" value="'+oi+'">'+op+'</label>';
+      });
+      html += '<div class="quiz-fb" id="fb'+qi+'"></div>';
+      d.innerHTML = html; quizDiv.appendChild(d);
+    });
+    document.getElementById('placar').textContent='';
+  }
+  document.getElementById('corrigir').addEventListener('click', function(){
+    var acertos=0;
+    perguntas.forEach(function(q, qi){
+      var sel = quizDiv.querySelector('input[name="q'+qi+'"]:checked');
+      var fb = document.getElementById('fb'+qi);
+      quizDiv.querySelectorAll('label[data-q="'+qi+'"]').forEach(function(l){ l.classList.remove('certo','errado'); });
+      if(!sel){ fb.className='quiz-fb no'; fb.textContent='Sem resposta. '+q.fb; return; }
+      var v = parseInt(sel.value,10);
+      var lblCerto = quizDiv.querySelector('label[data-q="'+qi+'"][data-o="'+q.c+'"]');
+      lblCerto.classList.add('certo');
+      if(v===q.c){ acertos++; fb.className='quiz-fb ok'; fb.textContent='Correto! '+q.fb; }
+      else{ var lblErr = quizDiv.querySelector('label[data-q="'+qi+'"][data-o="'+v+'"]'); lblErr.classList.add('errado'); fb.className='quiz-fb no'; fb.textContent='Resposta certa em verde. '+q.fb; }
+    });
+    var pl = document.getElementById('placar');
+    pl.textContent = 'Você acertou '+acertos+' de '+perguntas.length+'.';
+    window.scrollTo({top:document.getElementById('placar').getBoundingClientRect().top+window.scrollY-200, behavior:'smooth'});
+  });
+  document.getElementById('refazer').addEventListener('click', montarQuiz);
+  montarQuiz();
+})();
+</script>
+</body>
+</html>
